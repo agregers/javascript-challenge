@@ -71,7 +71,7 @@ function validateForm(form) {
     var selOther = form.elements['occupationOther'];
     var occValue = selOther.value;
     if (occSelect.value == 'other') {
-        valid = false;
+        selOther.className = 'form-control invalid-field';
         validateReqField(occValue);
     }
 
