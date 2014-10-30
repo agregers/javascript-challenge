@@ -43,13 +43,14 @@ function onReady() {
 document.addEventListener('DOMContentLoaded', onReady);
 
 function onSubmit(evt) {
-    var valid = validateForm(this);
 
-    if(!valid) {
-        var errMsg = document.getElementById('error-message');
-        errMsg.innerHTML = 'Please provide values for all required fields.';
-        errMsg.style.display = 'block';
+    try{
+        var valid = validateForm(this);
     }
+    catch(ex){
+
+    }
+
     if(!valid && evt.preventDefault) {
         evt.preventDefault();
     }
@@ -70,14 +71,16 @@ function validateForm(form) {
     var selOther = form.elements['occupationOther'];
     var occValue = selOther.value;
     if (occSelect.value == 'other') {
+        valid = false;
         validateReqField(occValue);
     }
 
-    testZip();
+    valid &= testZip(form.elements['zip']);
 
     var dob = form.elements['birthdate'].value;
     var age = calculateAge(dob);
     if (age < 13) {
+        valid = false;
         displayAge();
     }
 
@@ -94,7 +97,8 @@ function validateReqField (field) {
 
     }
     else {
-        field.className = 'form-control invalid field';
+        field.className = 'form-control invalid-field';
+
     }
 
     return valid;
@@ -118,14 +122,14 @@ function calculateAge(dob) {
     return yearsDiff;
 }
 
-function testZip() {
+function testZip(zipDigits) {
     var zipRegExp = new RegExp('^\\d{5}$');
-    var zipDigits = document.getElementById('zip');
 
     if(!zipRegExp.test(zipDigits.value)) {
-        var zipMsg = ('Zip code incorrect, please enter only 5 digits.');
-        displayError(zipMsg);
+        zipDigits.className = 'form-control invalid-field';
+        return false;
     }
+    return true;
 }
 
 function displayAge() {
