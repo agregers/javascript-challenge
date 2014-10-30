@@ -6,7 +6,7 @@
 
 function onReady() {
     var signUp = document.getElementById('signup');
-    var stateSelect = signUp.elements['state'];
+    var selState = signUp.elements['state'];
     var idx;
     var option;
     var state;
@@ -16,7 +16,7 @@ function onReady() {
         state = usStates[idx];
         option.value = state.code;
         option.innerHTML = state.name;
-        stateSelect.appendChild(option);
+        selState.appendChild(option);
     }
 
     var occSelect = document.getElementById('occupation');
@@ -33,8 +33,8 @@ function onReady() {
 
     var exitButton = document.getElementById('cancelButton');
     exitButton.addEventListener('click', function(){
-       if(window.confirm("Are you sure you want to leave?")) {
-           window.location = "http://google.com";
+       if(window.confirm("Are you sure you want to leave this page?")) {
+           window.location = "https://google.com";
        }
     });
     signUp.addEventListener('submit', onSubmit);
@@ -106,7 +106,7 @@ function validateReqField (field) {
 
 function calculateAge(dob) {
     if(!dob) {
-        throw new Error ('Please enter your birth date.');
+        throw new Error ('Please enter your birthdate.');
     }
 
     dob = new Date(dob);
@@ -133,7 +133,7 @@ function testZip(zipDigits) {
 }
 
 function displayAge() {
-    var ageMsg = 'You must be 13 or older to sign up.';
+    var ageMsg = 'You must be 13 years of age or older to signup';
     displayError(ageMsg);
 
 }
