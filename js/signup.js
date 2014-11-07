@@ -5,38 +5,61 @@
 "use strict"
 
 function onReady() {
-    var submitForm = document.getElementById('signup');
-    var stateSelect = submitForm.elements['usState'];
+    var signUp = document.getElementById('signup');
+    var stateSelect = signUp.elements['state'];
     var idx;
     var option;
-    var usState;
+    var state;
 
     for(idx = 0; idx < usStates.length; ++idx) {
         option = document.createElement('option');
-        usState = usStates[idx];
-        option.value = usState.code;
-        option.innerHTML = usState.name;
+        state = usStates[idx];
+        option.value = state.code;
+        option.innerHTML = state.name;
         stateSelect.appendChild(option);
     }
 
-    submitForm.addEventListener('submit', onSubmit);
+
+
+    var exitButton = document.getElementById('cancelButton');
+    exitButton.addEventListener('click', function(){
+       if(window.confirm("Are you sure you want to leave?")){
+           window.location = 'http://www.google.com';
+       }
+    });
+
+    var occupationSelect = document.getElementById('occupation');
+    var occupationOther = signUp.elements['occupationOther'];
+
+    occupationSelect.addEventListener('change', function(){
+        if(occupationSelect.value == 'other') {
+            occupationOther.style.display = 'block';
+        }
+        else{
+            occupationOther.value = "";
+            occupationOther.style.display = 'none';
+        }
+    });
+
+
+    signUp.addEventListener('submit', onSubmit);
+
 }
 document.addEventListener('DOMContentLoaded', onReady);
 
-function onSubmit(evt) {
+function onSubmit (eventObject) {
     try {
-        var valid = validateForm(this);
-    }
-    catch(ex) {
+        var valid = validateForm(this);}
+    catch(exception){}
 
+    if (!valid && eventObject.preventDefault) {
+        eventObject.preventDefault();
     }
 
-    if (!valid && evt.preventDefault) {
-        evt.preventDefault();
-    }
-    evt.returnValue = valid;
+    eventObject.returnValue = valid;
     return valid;
 }
+
 
 function validateForm(form) {
     var requiredFields = ['firstName', 'lastName', 'city', 'state', 'zip', 'birthdate'];
@@ -46,20 +69,25 @@ function validateForm(form) {
     for (idx = 0; idx < requiredFields.length; ++idx) {
         valid &= validateRequiredField(form.elements[requiredFields[idx]]);
     }
+    valid &= validateZip(form.elements['zip']);
 
-    var occSelect = document.getElementById('occupation');
-    var occOther = form.elements['occupationOther'];
-    var occValue = occOther.value;
-
-    if(occSelect.value == 'other') {
-        occOther.className = 'form-control invalid-field';
-        validateRequiredField(occValue);
+    var occupationSelect = document.getElementById('occupation');
+    var occupationOther = form.elements['occupationOther'];
+    if(occupationSelect.value == 'other'){
+        valid &= validateRequiredField(occupationSelect);
     }
-    valid &= validateRequiredField(form.elements['zip']);
 
-    var birthday = form.elements['birthdate'].value;
-    var age = age(dob);
+    var dob = form.elements['birthdate'];
+    var age = calculateAge(dob.value);
 
+    if(age < 13) {
+        valid &= false;
+        dob.className = 'form-control invalid-field';
+        displayAge(false);
+    }
+    else {
+        displayAge(true);
+    }
 
     return valid;
 }
@@ -79,20 +107,46 @@ function validateRequiredField(field) {
     return valid;
 
 }
-
-function age(dob){
-    if(!dob) {
-        throw new Error ('Please enter your birthdate.');
-
+function calculateAge(dob) {
+    if (!dob) {
+        throw new Error('Please enter your birth date!');
     }
     dob = new Date(dob);
-    var now = new Date();
-    var daysDiff = today.getDate() - dob.getUTCDate();
-    var monthsDiff = today.getMonth() - dob.getUTCMonth();
-    var yearsDiff = today.getFullYear() - dob.getUTCFullYear();
+    var today = new Date();
 
-    if(monthsDiff < 0 || (0 == monthsDiff && daysDiff < 0)) {
+    var yearsDiff = today.getFullYear() - dob.getUTCFullYear();
+    var monthsDiff = today.getMonth() - dob.getUTCMonth();
+    var daysDiff = today.getDate() - dob.getUTCDate();
+
+    if (monthsDiff < 0 || (0 == monthsDiff && daysDiff < 0)) {
         yearsDiff--;
     }
+
     return yearsDiff;
+}
+
+function displayAge(valid){
+    var msg = "You must be 13 years of age or older to signup";
+    var errMsg = document.getElementById('age-message');
+    errMsg.innerHTML = msg;
+    if(!valid){
+        errMsg.style.display = 'block';
+    }
+    else{
+        errMsg.style.display = 'none';
+    }
+
+}
+
+function  validateZip(zip) {
+    var regZip = new RegExp('^\\d{5}$');
+    var valid = regZip.test(zip.value);
+
+    if (valid) {
+        zip.className = 'form-control';
+    }
+    else {
+        zip.className = 'form-control invalid-field';
+    }
+    return valid;
 }
