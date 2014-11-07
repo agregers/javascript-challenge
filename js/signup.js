@@ -50,7 +50,9 @@ document.addEventListener('DOMContentLoaded', onReady);
 function onSubmit (eventObject) {
     try {
         var valid = validateForm(this);}
-    catch(exception){}
+    catch(err){
+
+    }
 
     if (!valid && eventObject.preventDefault) {
         eventObject.preventDefault();
@@ -127,7 +129,7 @@ function calculateAge(dob) {
 
 function displayAge(valid){
     var msg = "You must be 13 years of age or older to signup";
-    var errMsg = document.getElementById('age-message');
+    var errMsg = document.getElementById('birthdateMessage');
     errMsg.innerHTML = msg;
     if(!valid){
         errMsg.style.display = 'block';
