@@ -19,8 +19,6 @@ function onReady() {
         stateSelect.appendChild(option);
     }
 
-
-
     var exitButton = document.getElementById('cancelButton');
     exitButton.addEventListener('click', function(){
        if(window.confirm("Are you sure you want to leave?")){
@@ -63,7 +61,7 @@ function onSubmit (eventObject) {
 
 
 function validateForm(form) {
-    var requiredFields = ['firstName', 'lastName', 'city', 'state', 'zip', 'birthdate'];
+    var requiredFields = ['firstName', 'lastName', 'city', 'state', 'address1','zip', 'birthdate'];
     var idx;
     var valid = true;
 
