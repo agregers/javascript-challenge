@@ -30,7 +30,6 @@ function onReady() {
 
     var occupationSelect = document.getElementById('occupation');
     var occupationOther = signUp.elements['occupationOther'];
-
     occupationSelect.addEventListener('change', function(){
         if(occupationSelect.value == 'other') {
             occupationOther.style.display = 'block';
@@ -75,7 +74,11 @@ function validateForm(form) {
 
     var occupationSelect = document.getElementById('occupation');
     var occupationOther = form.elements['occupationOther'];
+    var occValue = occupationOther.value;
     if(occupationSelect.value == 'other'){
+        valid &= validateRequiredField(occupationOther);
+    }
+    else if(occupationSelect.value == ""){
         valid &= validateRequiredField(occupationSelect);
     }
 
